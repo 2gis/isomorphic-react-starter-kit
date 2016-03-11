@@ -1,17 +1,15 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import getAssets from './getAssets';
-
-import Html from '../../layouts/Html/Html.jsx';
+import Html from '../../layouts/Html/Html';
 import MyDivComponent from '../../components/MyDivComponent/MyDivComponent';
 
 
-export default function render() {
+export default function render(assetsData) {
     const componentData = 'Hello world!';
 
     const props = {
-        assets: getAssets(),
+        assets: assetsData,
         state: {
             data: componentData
         },

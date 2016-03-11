@@ -5,9 +5,9 @@ const stats = getStats();
  *
  * @returns {Object} Stats
  */
-function getAssetsData() {
+function getAssetsData(hostname) {
     return stats || {
-        publicPath: 'http://localhost:8080/assets/',
+        publicPath: `//${hostname}:8080/assets/`,
         assets: [
             {
                 name: 'main.js',
@@ -33,12 +33,16 @@ function getStats() {
 /**
  * Returns the object with assets
  *
- * @returns {Object} Assets for application
+ * @param {Object} req req
+ * @param {Object} res res
+ * @param {Function} next next
+ * @returns {void}
  */
-function getAssets() {
-    const {publicPath, assets} = getAssetsData();
+function getAssets(req, res, next) {
+    const hostname = req.headers.host.split(':')[0];
+    const {publicPath, assets} = getAssetsData(hostname);
 
-    return assets
+    req.assetsData = assets
         .filter(asset => asset.chunkNames.filter(name => !asset.name.indexOf(name)).length)
         .reduce((obj, {name}) => {
             if (/\.js$/.test(name)) {
@@ -51,6 +55,8 @@ function getAssets() {
             scripts: [],
             styles: []
         });
+
+    next();
 }
 
 export default getAssets;
